@@ -13,12 +13,14 @@ def alexa_skill():
     data = request.json
     intent = data.get('request', {}).get('intent', {}).get('name', '')
 
-    # Handle "It's hot in here"
+    # Ensure the intent name matches the correct one from Alexa
     if intent == "AdjustTemperatureIntent":
-        if "hot" in data['request']['intent']['slots']:
+        slots = data.get('request', {}).get('intent', {}).get('slots', {})
+
+        if "hot" in slots:
             new_temp = TEMPERATURE_PRESETS["hot"]
             response_text = f"Lowering the temperature to {new_temp} degrees."
-        elif "cold" in data['request']['intent']['slots']:
+        elif "cold" in slots:
             new_temp = TEMPERATURE_PRESETS["cold"]
             response_text = f"Raising the temperature to {new_temp} degrees."
         else:
