@@ -7,7 +7,7 @@ app = Flask(__name__)
 def home():
     return "Alexa skill backend is running!", 200
 
-# Alexa request handler
+# Alexa request handler (Must accept POST)
 @app.route("/alexa", methods=["POST"])
 def alexa_skill():
     try:
@@ -38,5 +38,6 @@ def alexa_skill():
         print("Error processing request:", str(e))
         return jsonify({"error": str(e)}), 500
 
+# Ensure the app runs on port 8080 (not 10000)
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
