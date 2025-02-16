@@ -13,10 +13,11 @@ def alexa_skill():
     try:
         data = request.json
         if not data:
+            print("🚨 ERROR: No data received from Alexa")
             return jsonify({"error": "No data received"}), 400
 
         # Log the full request for debugging
-        print("Received Alexa request:", data)
+        print("📥 Received Alexa request:", data)
 
         request_type = data.get("request", {}).get("type", "")
         intent = data.get("request", {}).get("intent", {}).get("name", "")
@@ -56,8 +57,17 @@ def alexa_skill():
             })
 
     except Exception as e:
-        print("Error processing request:", str(e))
-        return jsonify({"error": str(e)}), 500
+        print("🚨 ERROR processing request:", str(e))
+        return jsonify({
+            "version": "1.0",
+            "response": {
+                "outputSpeech": {
+                    "type": "PlainText",
+                    "text": "Sorry, something went wrong on my end."
+                },
+                "shouldEndSession": True
+            }
+        }), 500
 
 # Ensure Flask runs on port 8080
 if __name__ == "__main__":
