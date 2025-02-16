@@ -2,18 +2,18 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Root route to check if the server is running
+# Root route to confirm the server is running
 @app.route("/", methods=["GET"])
 def home():
-    return "Alexa skill backend is running."
+    return "Alexa skill backend is running!", 200
 
-# Handle Alexa requests
+# Handle Alexa requests at /alexa
 @app.route("/alexa", methods=["POST"])
 def alexa_skill():
     data = request.json
     intent = data.get('request', {}).get('intent', {}).get('name', '')
 
-    # Simple response for debugging
+    # Simple response to confirm Alexa requests are received
     return jsonify({
         "version": "1.0",
         "response": {
