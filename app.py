@@ -2,54 +2,22 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Predefined temperature settings
-TEMPERATURE_PRESETS = {
-    "hot": 76,  # Set temperature to 76°F when it's hot
-    "cold": 77  # Set temperature to 77°F when it's cold
-}
+# Root route to check if the server is running
+@app.route("/", methods=["GET"])
+def home():
+    return "Alexa skill backend is running."
 
-@app.route('/alexa', methods=['POST'])
+# Handle Alexa requests
+@app.route("/alexa", methods=["POST"])
 def alexa_skill():
     data = request.json
     intent = data.get('request', {}).get('intent', {}).get('name', '')
 
-    if intent == "AdjustTemperatureIntent":
-        slots = data.get('request', {}).get('intent', {}).get('slots', {})
-
-        # Ensure Alexa has provided a room (since it's required)
-        if "room" in slots and "value" in slots["room"]:
-            room = slots["room"]["value"]
-        else:
-            return jsonify({
-                "version": "1.0",
-                "response": {
-                    "outputSpeech": {"type": "PlainText", "text": "I didn't get the room name. Can you say it again?"},
-                    "shouldEndSession": False
-                }
-            })
-
-        # Check if the request is for hot or cold adjustment
-        if "hot" in slots:
-            new_temp = TEMPERATURE_PRESETS["hot"]
-            response_text = f"Lowering the temperature in the {room} to {new_temp} degrees."
-        elif "cold" in slots:
-            new_temp = TEMPERATURE_PRESETS["cold"]
-            response_text = f"Raising the temperature in the {room} to {new_temp} degrees."
-        else:
-            response_text = "I didn't catch that. Are you feeling hot or cold?"
-
-        return jsonify({
-            "version": "1.0",
-            "response": {
-                "outputSpeech": {"type": "PlainText", "text": response_text},
-                "shouldEndSession": True
-            }
-        })
-
+    # Simple response for debugging
     return jsonify({
         "version": "1.0",
         "response": {
-            "outputSpeech": {"type": "PlainText", "text": "I didn't understand that."},
+            "outputSpeech": {"type": "PlainText", "text": f"Received intent: {intent}"},
             "shouldEndSession": True
         }
     })
