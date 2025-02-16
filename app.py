@@ -24,6 +24,7 @@ def alexa_skill():
 
         # ✅ Handle LaunchRequest (Opening the skill)
         if request_type == "LaunchRequest":
+            print("✅ Handling LaunchRequest")
             return jsonify({
                 "version": "1.0",
                 "response": {
@@ -38,6 +39,7 @@ def alexa_skill():
         # ✅ Handle IntentRequests (Commands like "It's hot in here")
         elif request_type == "IntentRequest":
             response_text = f"Received intent: {intent}" if intent else "I didn't understand that command."
+            print(f"✅ Handling IntentRequest: {intent}")
             return jsonify({
                 "version": "1.0",
                 "response": {
@@ -48,6 +50,7 @@ def alexa_skill():
 
         # ✅ Handle unexpected requests
         else:
+            print("🚨 ERROR: Unexpected request type received")
             return jsonify({
                 "version": "1.0",
                 "response": {
