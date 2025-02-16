@@ -2,12 +2,12 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Health check route to verify the service is live
+# Root route to check if server is running
 @app.route("/", methods=["GET"])
 def home():
     return "Alexa skill backend is running!", 200
 
-# Alexa requests handler
+# Alexa request handler
 @app.route("/alexa", methods=["POST"])
 def alexa_skill():
     try:
@@ -15,18 +15,28 @@ def alexa_skill():
         if not data:
             return jsonify({"error": "No data received"}), 400
 
+        # Extract the intent name
         intent = data.get("request", {}).get("intent", {}).get("name", "")
+
+        # Log the incoming request for debugging
+        print("Received Alexa request:", data)
+
+        if intent:
+            response_text = f"Received intent: {intent}"
+        else:
+            response_text = "I didn't understand that command."
 
         return jsonify({
             "version": "1.0",
             "response": {
-                "outputSpeech": {"type": "PlainText", "text": f"Received intent: {intent}"},
+                "outputSpeech": {"type": "PlainText", "text": response_text},
                 "shouldEndSession": True
             }
         })
+    
     except Exception as e:
+        print("Error processing request:", str(e))
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
